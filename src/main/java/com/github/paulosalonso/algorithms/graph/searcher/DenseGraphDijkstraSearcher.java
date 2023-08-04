@@ -60,10 +60,10 @@ public class DenseGraphDijkstraSearcher {
                     continue;
                 }
 
-                final var weight = graph.getWeight(visitedVertex, vertex);
+                final var distance = graph.getDistance(visitedVertex, vertex);
 
-                if (weight.isPresent()) {
-                    final var newDistance = distances.get(visitedVertex) + weight.get();
+                if (distance.isPresent()) {
+                    final var newDistance = distances.get(visitedVertex) + distance.get();
 
                     if (newDistance < distances.get(vertex)) {
                         distances.put(vertex, newDistance);

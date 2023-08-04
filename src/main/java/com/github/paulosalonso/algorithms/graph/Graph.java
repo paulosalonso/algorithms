@@ -4,16 +4,18 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Collections.unmodifiableList;
+import static java.util.stream.Collectors.toMap;
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 public class Graph {
 
     private final List<Vertex> vertices;
-    private final List<Edge> edges;
+    private final Map<Vertex, List<Edge>> forwardEdges;
 
     private Graph(List<Vertex> vertices) {
         if (vertices == null) {
@@ -21,7 +23,7 @@ public class Graph {
         }
 
         this.vertices = unmodifiableList(vertices);
-        this.edges = new ArrayList<>();
+        this.forwardEdges = vertices.stream().collect(toMap(vertex -> vertex, vertex -> new ArrayList<>()));
     }
 
     public static Graph of(List<Vertex> vertices) {
@@ -30,57 +32,50 @@ public class Graph {
 
     public Graph joinDirected(Vertex from, Vertex to) {
         validateVertices(from, to);
-
-        edges.add(Edge.of(from, to));
-
+        final var edge = Edge.of(from, to);
+        forwardEdges.get(from).add(edge);
         return this;
     }
 
     public Graph joinDirected(Vertex from, Vertex to, int distance) {
         validateVertices(from, to);
-
-        edges.add(Edge.of(from, to, distance));
-
+        final var edge = Edge.of(from, to, distance);
+        forwardEdges.get(from).add(edge);
         return this;
     }
 
     public Graph joinUndirected(Vertex a, Vertex b) {
         validateVertices(a, b);
-
-        edges.add(Edge.of(a, b));
-        edges.add(Edge.of(b, a));
-
+        final var edgeA = Edge.of(a, b);
+        forwardEdges.get(a).add(edgeA);
+        final var edgeB = Edge.of(b, a);
+        forwardEdges.get(b).add(edgeB);
         return this;
     }
 
     public Graph joinUndirected(Vertex a, Vertex b, int distance) {
         validateVertices(a, b);
-
-        edges.add(Edge.of(a, b, distance));
-        edges.add(Edge.of(b, a, distance));
-
+        final var edgeA = Edge.of(a, b, distance);
+        forwardEdges.get(a).add(edgeA);
+        final var edgeB = Edge.of(b, a, distance);
+        forwardEdges.get(b).add(edgeB);
         return this;
     }
 
-    public Optional<Integer> getWeight(Vertex from, Vertex to) {
+    public Optional<Integer> getDistance(Vertex from, Vertex to) {
+        final var edges = forwardEdges.get(from);
         return edges.stream()
-                .filter(edge -> edge.from.equals(from))
                 .filter(edge -> edge.to.equals(to))
                 .findFirst()
                 .map(Edge::getDistance);
     }
 
     public List<Vertex> getNeighbors(Vertex vertex) {
-        return edges.stream()
-                .filter(v -> v.getFrom().equals(vertex))
-                .map(Edge::getTo)
-                .toList();
+        return forwardEdges.get(vertex).stream().map(Edge::getTo).toList();
     }
 
     public List<Edge> getForwardEdges(Vertex vertex) {
-        return edges.stream()
-                .filter(edge -> edge.from.equals(vertex))
-                .toList();
+        return forwardEdges.get(vertex);
     }
 
     public int indexOf(Vertex vertex) {

@@ -3,6 +3,7 @@ package com.github.paulosalonso.algorithms.graph.searcher;
 import com.github.paulosalonso.algorithms.graph.Graph;
 import com.github.paulosalonso.algorithms.graph.Graph.Edge;
 import com.github.paulosalonso.algorithms.graph.Graph.Vertex;
+import com.github.paulosalonso.algorithms.graph.Path;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +30,12 @@ public class FloydWarshallSearcher {
         return new FloydWarshallSearcher(graph);
     }
 
-    public List<Vertex> getShortestPath(final Vertex from, final Vertex to) {
+    public Path getShortestPath(final Vertex from, final Vertex to) {
         final var fromIndex = graph.indexOf(from);
         final var toIndex = graph.indexOf(to);
 
-        final var path = new ArrayList<Vertex>();
-        path.add(to);
+        final var vertices = new ArrayList<Vertex>();
+        vertices.add(to);
 
         Vertex predecessor = to;
         int predecessorIndex = toIndex;
@@ -42,10 +43,10 @@ public class FloydWarshallSearcher {
         while (predecessor != from) {
             predecessorIndex = pred[fromIndex][predecessorIndex];
             predecessor = graph.getVertices().get(predecessorIndex);
-            path.add(0, predecessor);
+            vertices.add(0, predecessor);
         }
 
-        return path;
+        return Path.of(vertices, (int) dist[fromIndex][toIndex]);
     }
 
     private void calculateAllPairsShortestPath() {

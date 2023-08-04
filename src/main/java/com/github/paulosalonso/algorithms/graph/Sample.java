@@ -50,26 +50,36 @@ public class Sample {
         var start = System.currentTimeMillis();
         var depthFirstSearcher = DepthFirstSearcher.of(graph);
         var depthFirstResult = depthFirstSearcher.search(v0);
-        System.out.println("DepthFirstSearcher:         " + depthFirstResult.findPathTo(v15) + " | duration: " + (System.currentTimeMillis() - start) + "ms");
+        var duration = System.currentTimeMillis() - start;
+        System.out.println("DepthFirstSearcher:         " + depthFirstResult.findPathTo(v15) + " | duration: " + duration + "ms");
 
         start = System.currentTimeMillis();
         var breadthFirstSearcher = BreadthFirstSearcher.of(graph);
         var breadthFirstResult = breadthFirstSearcher.search(v0);
-        System.out.println("BreadthFirstSearcher:       " + breadthFirstResult.findPathTo(v11) + " | duration: " + (System.currentTimeMillis() - start) + "ms");
+        duration = System.currentTimeMillis() - start;
+        System.out.println("BreadthFirstSearcher:       " + breadthFirstResult.findPathTo(v11) + " | duration: " + duration + "ms");
 
         start = System.currentTimeMillis();
         var dijkstraSearcher = DijkstraSearcher.of(graph);
         var dijkstraResult = dijkstraSearcher.search(v0);
-        System.out.println("DijkstraSearcher:           " + dijkstraResult.findPathTo(v5) + " | duration: " + (System.currentTimeMillis() - start) + "ms");
+        duration = System.currentTimeMillis() - start;
+        System.out.println("DijkstraSearcher:           " + dijkstraResult.findPathTo(v5) + " | duration: " + duration + "ms");
 
         start = System.currentTimeMillis();
         var denseGraphDijkstraSearcher = DenseGraphDijkstraSearcher.of(graph);
         var denseGraphDijkstraResult = denseGraphDijkstraSearcher.search(v0);
-        System.out.println("DenseGraphDijkstraSearcher: " + denseGraphDijkstraResult.findPathTo(v13) + " | duration: " + (System.currentTimeMillis() - start) + "ms");
+        duration = System.currentTimeMillis() - start;
+        System.out.println("DenseGraphDijkstraSearcher: " + denseGraphDijkstraResult.findPathTo(v13) + " | duration: " + duration + "ms");
 
         start = System.currentTimeMillis();
         var bellmanFordSearcher = BellmanFordSearcher.of(graph);
         var bellmanFordResult = bellmanFordSearcher.search(v0);
-        System.out.println("BellmanFordSearcher:        " + bellmanFordResult.findPathTo(v10) + " | duration: " + (System.currentTimeMillis() - start) + "ms");
+        duration = System.currentTimeMillis() - start;
+        System.out.println("BellmanFordSearcher:        " + bellmanFordResult.findPathTo(v10) + " | duration: " + duration + "ms");
+
+        start = System.currentTimeMillis();
+        var floydWarshallSearcher = FloydWarshallSearcher.of(graph);
+        duration = System.currentTimeMillis() - start;
+        System.out.println("FloydWarshallSearcher:      " + floydWarshallSearcher.getShortestPath(v0, v15) + " | duration: " + duration + "ms");
     }
 }

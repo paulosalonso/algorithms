@@ -1,13 +1,13 @@
 package com.github.paulosalonso.algorithms.graph.searcher;
 
 import com.github.paulosalonso.algorithms.graph.Graph.Vertex;
+import com.github.paulosalonso.algorithms.graph.Path;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
 import static lombok.AccessLevel.PRIVATE;
@@ -58,7 +58,7 @@ public class Predecessors {
 
     public Path findPathTo(final Vertex vertex) {
         final var vertices = buildPath(List.of(vertex));
-        return new Path(vertices, distances.get(vertices.get(vertices.size() - 1)));
+        return Path.of(vertices, distances.get(vertices.get(vertices.size() - 1)));
     }
 
     private List<Vertex> buildPath(List<Vertex> vertices) {
@@ -96,28 +96,4 @@ public class Predecessors {
         }
     }
 
-    @Getter
-    private static class Path {
-
-        private final List<Vertex> vertices;
-        private final int distance;
-
-        private Path(List<Vertex> vertices, int distance) {
-            this.vertices = Collections.unmodifiableList(vertices);
-            this.distance = distance;
-        }
-
-        public String toString() {
-            final var verticesChain = vertices.stream()
-                    .map(Vertex::getValue)
-                    .map(Object::toString)
-                    .collect(Collectors.joining(" → "));
-
-            if (distance >= 0) {
-                return verticesChain + " | distance: " + distance;
-            }
-
-            return verticesChain;
-        }
-    }
 }
