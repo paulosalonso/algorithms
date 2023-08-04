@@ -83,6 +83,10 @@ public class Graph {
                 .toList();
     }
 
+    public int indexOf(Vertex vertex) {
+        return vertices.indexOf(vertex);
+    }
+
     private void validateVertices(Vertex a, Vertex b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Vertices must be non null");
