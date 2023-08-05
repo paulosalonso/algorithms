@@ -32,38 +32,33 @@ public class Graph {
 
     public Graph joinDirected(Vertex from, Vertex to) {
         validateVertices(from, to);
-        final var edge = Edge.of(from, to);
-        forwardEdges.get(from).add(edge);
+        forwardEdges.get(from).add(Edge.of(from, to));
         return this;
     }
 
     public Graph joinDirected(Vertex from, Vertex to, int distance) {
         validateVertices(from, to);
-        final var edge = Edge.of(from, to, distance);
-        forwardEdges.get(from).add(edge);
+        forwardEdges.get(from).add(Edge.of(from, to, distance));
         return this;
     }
 
     public Graph joinUndirected(Vertex a, Vertex b) {
         validateVertices(a, b);
-        final var edgeA = Edge.of(a, b);
-        forwardEdges.get(a).add(edgeA);
-        final var edgeB = Edge.of(b, a);
-        forwardEdges.get(b).add(edgeB);
+        forwardEdges.get(a).add(Edge.of(a, b));
+        forwardEdges.get(b).add(Edge.of(b, a));
         return this;
     }
 
     public Graph joinUndirected(Vertex a, Vertex b, int distance) {
         validateVertices(a, b);
-        final var edgeA = Edge.of(a, b, distance);
-        forwardEdges.get(a).add(edgeA);
-        final var edgeB = Edge.of(b, a, distance);
-        forwardEdges.get(b).add(edgeB);
+        forwardEdges.get(a).add(Edge.of(a, b, distance));
+        forwardEdges.get(b).add(Edge.of(b, a, distance));
         return this;
     }
 
     public Optional<Integer> getDistance(Vertex from, Vertex to) {
         final var edges = forwardEdges.get(from);
+
         return edges.stream()
                 .filter(edge -> edge.to.equals(to))
                 .findFirst()
