@@ -11,12 +11,12 @@ public class PrimSearcher {
 
     private final Graph graph;
     private final long[] key;
-    private final int[] pred;
+    private final int[] predecessors;
 
     public PrimSearcher(Graph graph) {
         this.graph = graph;
         this.key = new long[graph.getVertices().size()];
-        this.pred = new int[graph.getVertices().size()];
+        this.predecessors = new int[graph.getVertices().size()];
     }
 
     public static PrimSearcher of(Graph graph) {
@@ -30,17 +30,17 @@ public class PrimSearcher {
     public Predecessors computeMinimumSpanningTree() {
         for (var i = 0; i < graph.getVertices().size(); i++) {
             key[i] = Integer.MAX_VALUE;
-            pred[i] = -1;
+            predecessors[i] = -1;
         }
 
         key[0] = 0;
 
         final var comparator = Comparator.<Vertex, Long>comparing(vertex -> key[graph.indexOf(vertex)]);
-        var PQ = new PriorityQueue<>(comparator);
-        PQ.addAll(graph.getVertices());
+        var priotityQueue = new PriorityQueue<>(comparator);
+        priotityQueue.addAll(graph.getVertices());
 
-        while(!PQ.isEmpty()) {
-            final var u = PQ.poll();
+        while(!priotityQueue.isEmpty()) {
+            final var u = priotityQueue.poll();
 
             final var neighborEdges = graph.getForwardEdges(u);
 
@@ -48,18 +48,18 @@ public class PrimSearcher {
                 final var neighborVertex = edge.getTo();
                 final var neighborIndex = graph.indexOf(neighborVertex);
 
-                if (PQ.contains(neighborVertex)) {
-                    final var w = edge.getDistance();
+                if (priotityQueue.contains(neighborVertex)) {
+                    final var distance = edge.getDistance();
 
-                    if (w < key[neighborIndex]) {
-                        pred[neighborIndex] = graph.indexOf(u);
-                        key[neighborIndex] = w;
+                    if (distance < key[neighborIndex]) {
+                        predecessors[neighborIndex] = graph.indexOf(u);
+                        key[neighborIndex] = distance;
 
-                        final var currentPQ = PQ;
-                        PQ = new PriorityQueue<>(comparator);
+                        final var currentPriorityQueue = priotityQueue;
+                        priotityQueue = new PriorityQueue<>(comparator);
 
-                        for (Vertex v : currentPQ) {
-                            PQ.offer(v);
+                        for (Vertex vertex : currentPriorityQueue) {
+                            priotityQueue.offer(vertex);
                         }
                     }
                 }
@@ -68,12 +68,12 @@ public class PrimSearcher {
 
         final var predecessors = Predecessors.newInstance();
 
-        for (var i =0; i < pred.length; i++) {
+        for (var i = 0; i < this.predecessors.length; i++) {
             final var vertex = graph.getVertices().get(i);
             Vertex predecessor = null;
 
-            if (pred[i] >= 0) {
-                predecessor = graph.getVertices().get(pred[i]);
+            if (this.predecessors[i] >= 0) {
+                predecessor = graph.getVertices().get(this.predecessors[i]);
             }
 
             predecessors.put(vertex, predecessor, (int) key[i]);
